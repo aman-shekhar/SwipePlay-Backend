@@ -1,7 +1,7 @@
 // app.js
 const express = require('express');
 const app = express();
-const authMiddleware = require('./middleware/authMiddleware');
+// const authMiddleware = require('./middleware/authMiddleware');
 
 // Middleware
 app.use(express.json());
@@ -10,7 +10,10 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send(`Welcome to Mlympix!! App Running on port ${PORT}`);
 });
-
+const challengesData = require('./assets/ChallengesData.json')
+app.get('/challenges', (req, res) => {
+  res.json(challengesData);
+});
 const usersRoutes = require('./routes/users');
 app.use('/users', usersRoutes);
 // app.use('/users', authMiddleware, usersRoutes);
