@@ -22,7 +22,7 @@ app.use('/users', usersRoutes);
 // app.use('/users', authMiddleware, usersRoutes);
 
 // Start server
-const PORT = process.env.port || 8080;
+const PORT = process.env.port || 3000;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
