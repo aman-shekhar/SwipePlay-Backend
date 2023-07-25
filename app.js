@@ -39,6 +39,7 @@ app.post('/postLikes/:userId', (req, res) => {
   
   //add likes in db
   // let likes = [{ "challengeID": "cricket34", "action": "like" },{"challengeID": "cricket35", "action": "unlike" }]
+  console.log("===likes body ",likes)
   likes.forEach(item => {
     const { challengeID, action } = item;
     const challengeIndex = likeCounts.data.findIndex(data => data.challengeID === challengeID);
