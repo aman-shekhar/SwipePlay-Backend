@@ -1,5 +1,14 @@
 // app.js
 const express = require('express');
+const axios = require('axios');
+
+const url = 'http://artemis.dview.io/artemis/v1/flush/1/sync/batch/mlympix.app';
+const headers = {
+    'cookie': 'auth_token=c6a8669e-ee95-4c42-9ef6-4a9b61380162;auth_user=1',
+    'X-MASTER-KEY': 'e25c6e78-5a81-4e55-b068-e498e620fb24',
+    'tenantId': '1',
+    'Content-Type': 'application/json'
+};
 const app = express();
 // const authMiddleware = require('./middleware/authMiddleware');
 
@@ -18,19 +27,65 @@ const shuffleArray = require('./helper/helper')
 app.get('/challenges/:userId', (req, res) => {
   const { userId } = req.params;
   console.log("===userId",userId)
-  //add user in db when curr_data is not true
+  let curr_data;
+  //add user in db when curr_data is not true  
   if(req?.query?.curr_data == 'true') { 
     shuffleArray(challengesOrderData?.record?.challengeIDs); 
     res.json(challengesOrderData) 
+    curr_data = true;
   }
   else {
     shuffleArray(challengesData?.record?.challengeIDs); 
     res.json(challengesData);
+    curr_data = false;
   }
+  const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
+  const data = {
+    messages: [
+        {
+            stream: 'login',
+            event_type: "login_play_store",
+            ts: currentTimestamp,
+            props: {
+              curr_data:curr_data,
+              userId:userId,
+              endpoint:"/challenges"
+            }
+        }
+    ]
+  };
+  axios.post(url, data, { headers })
+  .then(response => {
+      console.log('Response:', response.data);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 });
 
 app.get('/likes', (req, res) => {
   res.json(likeCounts);
+  const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
+  const data = {
+    messages: [
+        {
+            stream: 'login',
+            event_type: "login_play_store",
+            ts: currentTimestamp,
+            props: {
+              data:likeCounts,
+              endpoint:"/likes",
+            }
+        }
+    ]
+  };
+  axios.post(url, data, { headers })
+  .then(response => {
+      console.log('Response:', response.data);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 });
 
 app.post('/postLikes/:userId', (req, res) => {
@@ -57,6 +112,28 @@ app.post('/postLikes/:userId', (req, res) => {
   console.log("===batch like data ",likes)
   console.log("====user ",userId)
   res.sendStatus(200);
+  const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
+  const data = {
+    messages: [
+        {
+            stream: 'login',
+            event_type: "login_play_store",
+            ts: currentTimestamp,
+            props: {
+              userId:userId,
+              endpoint:"/postLikes",
+              data:likes
+            }
+        }
+    ]
+  };
+  axios.post(url, data, { headers })
+  .then(response => {
+      console.log('Response:', response.data);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 });
 
 // const usersRoutes = require('./routes/users');
