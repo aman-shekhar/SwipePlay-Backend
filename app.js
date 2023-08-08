@@ -19,7 +19,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send(`Welcome to Mlympix!! App Running on port ${PORT}`);
 });
-const likeCounts = {"data":[{"challengeID":"cricket34","likes":2},{"challengeID":"web1","likes":2},{"challengeID":"web2","likes":1},{"challengeID":"web3","likes":1},{"challengeID":"web4","likes":2},{"challengeID":"web5","likes":1},{"challengeID":"penalty1","likes":1},{"challengeID":"moksha1","likes":1},{"challengeID":"cricket35","likes":1},{"challengeID":"shatranj1","likes":1},{"challengeID":"hurdling1","likes":1},{"challengeID":"penalty4","likes":3},{"challengeID":"chaupar1","likes":3},{"challengeID":"archery4","likes":3},{"challengeID":"archery1","likes":3},{"challengeID":"cricket27","likes":3},{"challengeID":"cricket1","likes":3},{"challengeID":"penalty2","likes":3},{"challengeID":"hurdling2","likes":3},{"challengeID":"cricket19","likes":3},{"challengeID":"archery2","likes":2},{"challengeID":"penalty3","likes":2},{"challengeID":"archery3","likes":2},{"challengeID":"cricket21","likes":2},{"challengeID":"hurdling3","likes":2},{"challengeID":"cricket25","likes":1},{"challengeID":"penalty5","likes":1},{"challengeID":"archery11","likes":1},{"challengeID":"archery5","likes":1},{"challengeID":"archery6","likes":1},{"challengeID":"cricket2","likes":2},{"challengeID":"hurdling4","likes":2},{"challengeID":"cricket24","likes":3},{"challengeID":"cricket29","likes":3},{"challengeID":"archery7","likes":3},{"challengeID":"archery12","likes":2},{"challengeID":"cricket40","likes":2},{"challengeID":"cricket28","likes":2},{"challengeID":"cricket16","likes":2},{"challengeID":"cricket39","likes":2},{"challengeID":"archery8","likes":2},{"challengeID":"cricket9","likes":1},{"challengeID":"cricket12","likes":1},{"challengeID":"cricket6","likes":1},{"challengeID":"archery0","likes":1},{"challengeID":"cricket38","likes":2},{"challengeID":"cricket17","likes":2},{"challengeID":"cricket14","likes":2},{"challengeID":"archery9","likes":2},{"challengeID":"cricket5","likes":2},{"challengeID":"cricket30","likes":2},{"challengeID":"cricket3","likes":2},{"challengeID":"cricket13","likes":2}]}
+const likeCounts = {"data":[{"challengeID":"cricket34","likes":3},{"challengeID":"web1","likes":2},{"challengeID":"web2","likes":2},{"challengeID":"web3","likes":1},{"challengeID":"web4","likes":2},{"challengeID":"web5","likes":1},{"challengeID":"penalty1","likes":1},{"challengeID":"moksha1","likes":1},{"challengeID":"cricket35","likes":1},{"challengeID":"shatranj1","likes":1},{"challengeID":"hurdling1","likes":1},{"challengeID":"penalty4","likes":3},{"challengeID":"chaupar1","likes":3},{"challengeID":"archery4","likes":3},{"challengeID":"archery1","likes":3},{"challengeID":"cricket27","likes":3},{"challengeID":"cricket1","likes":3},{"challengeID":"penalty2","likes":3},{"challengeID":"hurdling2","likes":3},{"challengeID":"cricket19","likes":3},{"challengeID":"archery2","likes":2},{"challengeID":"penalty3","likes":2},{"challengeID":"archery3","likes":2},{"challengeID":"cricket21","likes":2},{"challengeID":"hurdling3","likes":2},{"challengeID":"cricket25","likes":1},{"challengeID":"penalty5","likes":1},{"challengeID":"archery11","likes":1},{"challengeID":"archery5","likes":1},{"challengeID":"archery6","likes":1},{"challengeID":"cricket2","likes":2},{"challengeID":"hurdling4","likes":2},{"challengeID":"cricket24","likes":3},{"challengeID":"cricket29","likes":3},{"challengeID":"archery7","likes":3},{"challengeID":"archery12","likes":2},{"challengeID":"cricket40","likes":2},{"challengeID":"cricket28","likes":2},{"challengeID":"cricket16","likes":2},{"challengeID":"cricket39","likes":2},{"challengeID":"archery8","likes":2},{"challengeID":"cricket9","likes":1},{"challengeID":"cricket12","likes":1},{"challengeID":"cricket6","likes":1},{"challengeID":"archery0","likes":1},{"challengeID":"cricket38","likes":2},{"challengeID":"cricket17","likes":2},{"challengeID":"cricket14","likes":2},{"challengeID":"archery9","likes":2},{"challengeID":"cricket5","likes":2},{"challengeID":"cricket30","likes":2},{"challengeID":"cricket3","likes":2},{"challengeID":"cricket13","likes":2}]}
 const challengesData = require('./assets/ChallengesData.json')
 const challengesOrderData = require('./assets/ChallengesOrderData.json')
 const shuffleArray = require('./helper/helper')
@@ -65,6 +65,11 @@ app.get('/challenges/:userId', (req, res) => {
 
 app.get('/likes', (req, res) => {
   res.json(likeCounts);
+  const likesObj = {}
+  likeCounts.data.forEach(item => {
+    const { challengeID, likes } = item;
+    likesObj[challengeID] = likes;
+  })
   const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
   const data = {
     messages: [
@@ -73,7 +78,7 @@ app.get('/likes', (req, res) => {
             event_type: "login_play_store",
             ts: currentTimestamp,
             props: {
-              data:likeCounts,
+              likes:likesObj,
               endpoint:"/likes",
             }
         }
@@ -112,6 +117,11 @@ app.post('/postLikes/:userId', (req, res) => {
   console.log("===batch like data ",likes)
   console.log("====user ",userId)
   res.sendStatus(200);
+  const likesObj = {}
+  likes.forEach(item => {
+    const { challengeID, action } = item;
+    likesObj[challengeID] = action;
+  })
   const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
   const data = {
     messages: [
@@ -122,7 +132,7 @@ app.post('/postLikes/:userId', (req, res) => {
             props: {
               userId:userId,
               endpoint:"/postLikes",
-              data:likes
+              action:likesObj
             }
         }
     ]
