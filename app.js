@@ -35,6 +35,7 @@ app.get('/challenges/:userId', (req, res) => {
   const { userId } = req.params;
   console.log("===userId",userId)
   let curr_data, data;
+  const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
   //add user in db when curr_data is not true  
   if(req?.query?.curr_data == 'true') { 
     shuffleArray(challengesOrderData?.record?.challengeIDs); 
@@ -74,7 +75,6 @@ app.get('/challenges/:userId', (req, res) => {
       ]
     };
   }
-  const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
   
   axios.post(url, data, { headers })
   .then(response => {
