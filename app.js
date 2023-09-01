@@ -10,7 +10,7 @@ const server = http1.createServer(app);
 const io = require('socket.io')(http);
 global.io = io;
 
-const url = 'http://artemis.dview.io/artemis/v1/flush/1/sync/batch/mlympix.app';
+const url = 'https://artemis.dview.io/artemis/v1/flush/1/sync/batch/mlympix.app';
 const headers = {
     'cookie': 'auth_token=c6a8669e-ee95-4c42-9ef6-4a9b61380162;auth_user=1',
     'X-MASTER-KEY': 'e25c6e78-5a81-4e55-b068-e498e620fb24',
@@ -34,40 +34,55 @@ const shuffleArray = require('./helper/helper')
 app.get('/challenges/:userId', (req, res) => {
   const { userId } = req.params;
   console.log("===userId",userId)
-  let curr_data;
+  let curr_data, data;
   //add user in db when curr_data is not true  
   if(req?.query?.curr_data == 'true') { 
     shuffleArray(challengesOrderData?.record?.challengeIDs); 
     res.json(challengesOrderData) 
     curr_data = true;
+    data = {
+      messages: [
+        {
+          stream: "content_engagement",
+          event_type: "feed_loaded",
+          ts: currentTimestamp,
+          props: {
+            curr_data:curr_data,
+            userId:userId,
+            endpoint:"/challenges"
+          }
+        }
+      ]
+    };
   }
   else {
     shuffleArray(challengesData?.record?.challengeIDs); 
     res.json(challengesData);
     curr_data = false;
+    data = {
+      messages: [
+        {
+          stream: "user_onboarding",
+          event_type: "new_account_created",
+          ts: currentTimestamp,
+          props: {
+            curr_data:curr_data,
+            userId:userId,
+            endpoint:"/challenges"
+          }
+        }
+      ]
+    };
   }
   const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
-  const data = {
-    messages: [
-        {
-            stream: 'login',
-            event_type: "login_play_store",
-            ts: currentTimestamp,
-            props: {
-              curr_data:curr_data,
-              userId:userId,
-              endpoint:"/challenges"
-            }
-        }
-    ]
-  };
-  // axios.post(url, data, { headers })
-  // .then(response => {
-  //     console.log('Response:', response.data);
-  // })
-  // .catch(error => {
-  //     console.error('Error:', error);
-  // });
+  
+  axios.post(url, data, { headers })
+  .then(response => {
+      console.log('Response:', response.data);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 });
 
 app.get('/likes', (req, res) => {
@@ -81,8 +96,8 @@ app.get('/likes', (req, res) => {
   const data = {
     messages: [
         {
-            stream: 'login',
-            event_type: "login_play_store",
+            stream: "social_interaction",
+            event_type: "likes_data_loaded",
             ts: currentTimestamp,
             props: {
               likes:likesObj,
@@ -91,13 +106,13 @@ app.get('/likes', (req, res) => {
         }
     ]
   };
-  // axios.post(url, data, { headers })
-  // .then(response => {
-  //     console.log('Response:', response.data);
-  // })
-  // .catch(error => {
-  //     console.error('Error:', error);
-  // });
+  axios.post(url, data, { headers })
+  .then(response => {
+      console.log('Response:', response.data);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 });
 
 app.post('/postLikes/:userId', (req, res) => {
@@ -133,8 +148,8 @@ app.post('/postLikes/:userId', (req, res) => {
   const data = {
     messages: [
         {
-            stream: 'login',
-            event_type: "login_play_store",
+            stream: "social_interaction",
+            event_type: "like_unlike",
             ts: currentTimestamp,
             props: {
               userId:userId,
@@ -144,13 +159,13 @@ app.post('/postLikes/:userId', (req, res) => {
         }
     ]
   };
-  // axios.post(url, data, { headers })
-  // .then(response => {
-  //     console.log('Response:', response.data);
-  // })
-  // .catch(error => {
-  //     console.error('Error:', error);
-  // });
+  axios.post(url, data, { headers })
+  .then(response => {
+      console.log('Response:', response.data);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 });
 
 // // API endpoint for sending a message
@@ -194,41 +209,39 @@ app.get('/chat', (req, res) => {
 app.use(express.static('public'))
 const activeUsers = new Set();
 io.on('connection', (socket) => {
-    console.log('User connected ');
+  console.log('User connected');
 
 	socket.on('send name', (username) => {
-        console.log("====here",username,activeUsers)
-        if (activeUsers.size <= 2 && (username === 'user1' || username === 'user2')) {
-            socket.username = username;
-            activeUsers.add(username);
-            console.log(`${username} joined the chat.`);
-            // io.emit('message', `${username} joined the chat.`);
-            io.emit('send name', (username));
-
-        } else {
-            socket.emit('invalid');
-            socket.disconnect(true);
-        }
-    });
+    console.log("====here",username,activeUsers)
+    if (activeUsers.size <= 2 && (username === 'user1' || username === 'user2')) {
+      socket.username = username;
+      activeUsers.add(username);
+      console.log(`${username} joined the chat.`);
+      // io.emit('message', `${username} joined the chat.`);
+      io.emit('send name', (username));
+    } else {
+      socket.emit('invalid');
+      socket.disconnect(true);
+    }
+  });
 
 	socket.on('send message', (chat) => {
 		io.emit('send message', (chat));
 	});
 
-    socket.on('disconnect', () => {
-        if (socket.username) {
-            activeUsers.delete(socket.username);
-            console.log(`${socket.username} left the chat.`);
-            io.emit('message', `${socket.username} left the chat.`);
-        }
-        console.log('User disconnected', socket.username);
-    });
+  socket.on('disconnect', () => {
+    if (socket.username) {
+      activeUsers.delete(socket.username);
+      console.log(`${socket.username} left the chat.`);
+      io.emit('message', `${socket.username} left the chat.`);
+    }
+    console.log('User disconnected', socket.username);
+  });
 });
 // Start server
 const PORT = process.env.port || 3000;
 http.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
-
 
 module.exports = app;
