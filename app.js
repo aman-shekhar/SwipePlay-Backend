@@ -38,7 +38,7 @@ app.get('/challenges/:userId', (req, res) => {
   const currentTimestamp = Date.now(); // Returns the current timestamp in milliseconds since January 1, 1970 (Unix epoch)
   //add user in db when curr_data is not true  
   if(req?.query?.curr_data == 'true') { 
-    shuffleArray(challengesOrderData?.record?.challengeIDs); 
+    // shuffleArray(challengesOrderData?.record?.challengeIDs); 
     res.json(challengesOrderData) 
     curr_data = true;
     data = {
@@ -57,7 +57,7 @@ app.get('/challenges/:userId', (req, res) => {
     };
   }
   else {
-    shuffleArray(challengesData?.record?.challengeIDs); 
+    // shuffleArray(challengesData?.record?.challengeIDs); 
     res.json(challengesData);
     curr_data = false;
     data = {
