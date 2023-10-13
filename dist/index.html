@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Developer Dashboard</title>
+    <link rel="stylesheet" href="/index.f7deb263.css"> <!-- You can link to an external stylesheet -->
+</head>
+<body>
+    <header>
+        <div style="float: left; padding-left: 10px">
+            <a href="#" class="logo"><img src="/logo1.fd087092.png" alt="logo" width="150"></a>
+      </div>
+        <h1>Game Upload Portal</h1>
+        <p>Welcome, Game Developers!</p>
+    </header>
+    <main>
+        <div class="loader" id="loader">
+            <img src="/loading-bar.76d51f4a.png" style="width: 100px; height: auto" alt="loading">
+        </div>
+        <div class="upload-success-floater" id="uploadSuccessFloater">
+            <p>Upload complete!</p>
+        </div>
+        <section class="upload-section">
+            <h2>Upload Game Assets</h2>
+            <br>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="developerName">Developer Name:</label>
+                    <!-- <input type="text" id="developerName" name="developerName"> -->
+                    <input type="text" id="developerName" name="developerName" required="">
+                </div>
+                <div class="form-group">
+                    <label for="gameName">Game Name:</label>
+                    <!-- <input type="text" id="gameName" name="gameName"> -->
+                    <input type="text" id="gameName" name="gameName" required="">
+                </div>
+                <div class="form-group">
+                    <label for="gameLink">Play Store Link:</label>
+                    <!-- <input type="text" id="gameLink" name="gameLink"> -->
+                    <input type="text" id="gameLink" name="gameLink" required="">
+                </div>
+                <div class="form-group">
+                    <label for="assetType">Asset Type:</label>
+                    <select id="assetType" name="assetType" required="">
+                        <option value="html">HTML5 assets</option>
+                        <option value="webgl">WebGL assets</option>
+                        <!-- <option value="environments">Environments</option>
+                        <option value="sound">Sound Effects</option> -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assetFile">Select Asset Folder:</label>
+                    <input type="file" id="assetFile" name="assetFile" webkitdirectory="" directory="">
+                </div>
+                <button id="upload-button" type="button">Upload</button>
+            </form>
+        </section>
+        
+        <!-- <section class="uploaded-assets">
+            <h2>Uploaded Assets</h2>
+            Display uploaded assets here
+        </section> -->
+    </main>
+    <footer>
+        <p>Mlympix © 2023 All Rights Reserved.</p>
+    </footer>
+    
+
+    <!-- <script src="scripts.js"></script>  -->
+    <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
+    <script src="/index.abd619d0.js" defer=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/azure-storage/2.10.0/azure-storage.blob.min.js"></script> -->
+
+    <!-- <script>
+    // Replace with your SAS URL
+    const sasUrl = "https://funtechprodstorage.blob.core.windows.net/assets?sp=racwdli&st=2023-09-20T05:51:21Z&se=2023-10-20T13:51:21Z&sv=2022-11-02&sr=c&sig=vM%2FYgzRzUbN8tI7OrC52r%2FP3SOx4XdZhuPzWphxV1OQ%3D";
+
+    $("#uploadForm").submit(function (e) {
+        e.preventDefault();
+
+        const fileInput = document.getElementById("assetFile");
+        const files = fileInput.files;
+
+        const blobService = AzureStorage.Blob.createBlobServiceWithSas(sasUrl);
+        console.log("====here1")
+        // Loop through selected files and folders
+        for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        console.log("====here2", file.name)
+
+        // Upload each file/folder
+        blobService.createBlockBlobFromBrowserFile(
+            "funtechprodstorage",
+            file.name,
+            file,
+            (error, result, response) => {
+            if (!error) {
+                // File/folder uploaded successfully
+                console.log("File/folder uploaded:", result);
+            } else {
+                // Handle the error
+                console.error("Error uploading file/folder:", error);
+            }
+            }
+        );
+        console.log("====uploaded", file.name)
+        
+        }
+    });
+    </script> -->
+
+</body>
+</html>

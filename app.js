@@ -203,9 +203,13 @@ app.post('/postLikes/:userId', (req, res) => {
 // app.use('/users', usersRoutes);
 // app.use('/users', authMiddleware, usersRoutes);
 
-app.get('/chat', (req, res) => {
-	res.sendFile(__dirname + '/index.html');
-});
+// app.get('/chat', (req, res) => {
+// 	res.sendFile(__dirname + '/index.html');
+// });
+// app.get('/devPortal', (req, res) => {
+// 	res.sendFile(__dirname + '/devPortal/index.html');
+// });
+app.use(express.static("devPortal"));
 app.use(express.static('public'))
 const activeUsers = new Set();
 io.on('connection', (socket) => {
