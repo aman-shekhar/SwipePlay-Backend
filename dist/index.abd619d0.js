@@ -646,23 +646,23 @@ const uploadFiles = async ()=>{
     }
 };
 // Function to show the floating element
-// function showUploadSuccessFloater() {
-//     const floater = document.getElementById("uploadSuccessFloater");
-//     const loader = document.getElementById("loader");
-//     loader.style.display = "flex";
-//     setTimeout(function () {
-//         floater.style.display = "block";
-//         loader.style.display = "none";
-//     }, 3000);
-//     // Hide the floating element after 2 seconds
-//     setTimeout(function () {
-//         floater.style.display = "none";
-//     }, 10000);
-// }
+function showUploadSuccessFloater() {
+    const floater1 = document.getElementById("uploadSuccessFloater");
+    const loader1 = document.getElementById("loader");
+    loader1.style.display = "flex";
+    setTimeout(function() {
+        floater1.style.display = "block";
+        loader1.style.display = "none";
+    }, 3000);
+    // Hide the floating element after 2 seconds
+    setTimeout(function() {
+        floater1.style.display = "none";
+    }, 10000);
+}
 // Add a click event listener to the button
 uploadButton.addEventListener("click", function() {
     // Simulate a successful upload by calling the showUploadSuccessFloater function
-    uploadFiles();
+    showUploadSuccessFloater();
 }); // uploadButton.addEventListener("click", () => fileInput.click());
  // fileInput.addEventListener("change", uploadFiles);
  // uploadButton.addEventListener("click", () => uploadFiles);
