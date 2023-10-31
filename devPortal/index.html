@@ -21,8 +21,9 @@
         <div class="upload-success-floater" id="uploadSuccessFloater">
             <p>Upload complete!</p>
         </div>
+        
         <section class="upload-section">
-            <h2>Upload Game Assets</h2>
+            <h2>Upload Game Trailers</h2>
             <br>
             <form id="uploadForm" enctype="multipart/form-data">
                 <div class="form-group">
@@ -41,17 +42,22 @@
                     <input type="text" id="gameLink" name="gameLink" required>
                 </div>
                 <div class="form-group">
-                    <label for="assetType">Asset Type:</label>
+                    <label for="assetType">Trailer Asset Status:</label>
                     <select id="assetType" name="assetType" required>
-                        <option value="html">HTML5 assets</option>
-                        <option value="webgl">WebGL assets</option>
+                        <option value="html">I have a URL to access the web game</option>
+                        <option value="webgl">I have the assets related to the web game</option>
                         <!-- <option value="environments">Environments</option>
                         <option value="sound">Sound Effects</option> -->
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="assetFolder">
                     <label for="assetFile">Select Asset Folder:</label>
                     <input type="file" id="assetFile" name="assetFile" webkitdirectory directory>
+                </div>
+                <div class="form-group" id="assetLink">
+                    <label for="trailerLink">Trailer Link:</label>
+                    <!-- <input type="text" id="gameLink" name="gameLink"> -->
+                    <input type="text" id="trailerLink" name="trailerLink" required>
                 </div>
                 <button id="upload-button" type="button">Upload</button>
             </form>

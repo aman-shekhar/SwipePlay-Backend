@@ -109,3 +109,26 @@ uploadButton.addEventListener("click", function () {
 // fileInput.addEventListener("change", uploadFiles);
 
 uploadButton.addEventListener("click", () => showUploadSuccessFloater);
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const assetType = document.getElementById("assetType");
+    const assetFolder = document.getElementById("assetFolder");
+    const assetLink = document.getElementById("assetLink");
+
+    // Initially hide the asset folder input
+    assetFolder.style.display = "none";
+
+    // Add a change event listener to the assetType dropdown
+    assetType.addEventListener("change", function () {
+        if (assetType.value === "webgl") {
+            // Show the asset folder input and hide the game link input
+            assetFolder.style.display = "block";
+            assetLink.style.display = "none";
+        } else {
+            // Show the game link input and hide the asset folder input
+            assetFolder.style.display = "none";
+            assetLink.style.display = "block";
+        }
+    });
+});
