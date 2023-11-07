@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        /* Style for the dashboard */
+        body {
+            text-align: center;
+        }
+        
+        /* Style for the login dialog */
+        #login-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            width: 300px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+    <button id="show-login-button">Login</button>
+    
+    <!-- Login Dialog Box -->
+    <div id="login-dialog">
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="username">Email:</label>
+            <input type="text" id="username" name="username" required><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+            <button type="button" id="login-button">Login</button>
+        </form>
+        <p id="login-status"></p>
+        <button id="close-dialog-button">Close</button>
+    </div>
+
+    <script>
+        // Show the login dialog when the "Login" button is clicked
+        document.getElementById('show-login-button').addEventListener('click', function() {
+            document.getElementById('login-dialog').style.display = 'block';
+        });
+
+        // Close the login dialog when the "Close" button is clicked
+        document.getElementById('close-dialog-button').addEventListener('click', function() {
+            document.getElementById('login-dialog').style.display = 'none';
+        });
+
+        // Handle the login logic
+        document.getElementById('login-button').addEventListener('click', function () {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Replace these hardcoded values with your actual username and password database.
+            var validUsername = 'mlympix.aman@gmail.com';
+            var validPassword = 'transformerS@1';
+
+            if (username === validUsername && password === validPassword) {
+                document.getElementById('login-status').textContent = 'Login successful.';
+                // Redirect the user to the dashboard content or another page.
+                Example: window.location.href = 'index.html';
+            } else {
+                document.getElementById('login-status').textContent = 'Invalid username or password.';
+            }
+        });
+    </script>
+</body>
+</html>

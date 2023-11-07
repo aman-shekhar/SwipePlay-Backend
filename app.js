@@ -207,7 +207,7 @@ app.get('/chat', (req, res) => {
 	res.sendFile(__dirname + '/index.html');
 });
 app.get('/devPortal', (req, res) => {
-	res.sendFile(__dirname + '/devPortal/index.html');
+	res.sendFile(__dirname + '/devPortal/login.html');
 });
 app.use(express.static("devPortal"));
 app.use(express.static('public'))
