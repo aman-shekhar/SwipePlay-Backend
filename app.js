@@ -6,6 +6,7 @@ const http = require('http').createServer(app);
 const { Server } = require('socket.io');
 const http1 = require('http');
 const server = http1.createServer(app);
+const puppeteer = require('puppeteer');
 
 const io = require('socket.io')(http);
 global.io = io;
@@ -17,6 +18,148 @@ const headers = {
     'tenantId': '1',
     'Content-Type': 'application/json'
 };
+
+app.get('/measure-metrics/', async (req, res) => {
+  const url = req.query.URL;
+  // const url = "https://play.famobi.com/wrapper/archery-world-tour/A1000-10";
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url);
+
+    // Measure Metrics
+    const fps = await measureFPS(page);
+    const memoryUsage = await measureMemoryUsage(page);
+    const networkLatency = await measureNetworkLatency(page);
+    const domContentLoadedTime = await measureDomContentLoadedTime(page);
+    const gameLoadingTime = await measureGameLoadingTime(page);
+    const resourceWaterfall = await analyzeResourceWaterfall(page);
+    const gpuUtilization = await assessGPUUtilization(page);
+
+    // Format Metrics for Display
+    const metrics = {
+      fps,
+      memoryUsage,
+      networkLatency,
+      domContentLoadedTime,
+      gameLoadingTime,
+      resourceWaterfall,
+      gpuUtilization,
+    };
+
+    await browser.close();
+
+    // Respond with Formatted JSON
+    res.header("Content-Type",'application/json');
+    res.send(JSON.stringify(metrics, null, 2)); // Indentation of 2 spaces for better readability
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error measuring metrics.');
+  }
+});
+
+// Measure FPS (Frames Per Second)
+async function measureFPS(page) {
+  return await page.evaluate(() => {
+    // Example: Implement logic to measure FPS here
+    return 60; // Placeholder value, replace with actual measurement
+  });
+}
+
+// Measure Memory Usage
+async function measureMemoryUsage(page) {
+  return await page.evaluate(() => {
+    // Example: Implement logic to measure memory usage here
+    return performance.memory.usedJSHeapSize; // Placeholder value, replace with actual measurement
+  });
+}
+
+// Measure Network Latency
+async function measureNetworkLatency(page) {
+  const startTime = Date.now();
+  await page.goto('about:blank');
+  const endTime = Date.now();
+  return endTime - startTime;
+}
+
+// Measure DOM Content Loaded Time
+async function measureDomContentLoadedTime(page) {
+  return await page.evaluate(() => {
+    return window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart;
+  });
+}
+
+// Measure Game Loading Time (Example: Assuming a specific event)
+async function measureGameLoadingTime(page) {
+  return await page.evaluate(() => {
+    // Example: Implement logic to measure game loading time here
+    return 5000; // Placeholder value, replace with actual measurement
+  });
+}
+
+// Analyze Resource Waterfall
+async function analyzeResourceWaterfall(page) {
+  return await page.evaluate(() => {
+    // Example: Implement logic to analyze resource waterfall here
+    const resources = window.performance.getEntriesByType('resource');
+    console.log("===wefewfewf",window.performance)
+    return resources.map(resource => ({
+      name: resource.name,
+      duration: resource.duration,
+    }));
+  });
+}
+
+// Assess GPU Utilization
+async function assessGPUUtilization(page) {
+  return await page.evaluate(() => {
+    // Example: Implement logic to assess GPU utilization here
+    return 70; // Placeholder value, replace with actual measurement
+  });
+}
+
+// Measure FPS (Frames Per Second)
+// async function measureFPS(page) {
+//   return await page.evaluate(() => {
+//     const frameTimes = [];
+//     let lastFrameTime = performance.now();
+
+//     function measureFrame() {
+//       const currentTime = performance.now();
+//       const frameTime = currentTime - lastFrameTime;
+//       frameTimes.push(frameTime);
+//       lastFrameTime = currentTime;
+
+//       if (frameTimes.length > 60) {
+//         frameTimes.shift();
+//       }
+
+//       const fps = 1000 / (frameTimes.reduce((a, b) => a + b, 0) / frameTimes.length);
+//       return Math.round(fps);
+//     }
+
+//     // Listen for RAF (Request Animation Frame) events to measure FPS
+//     const observer = new PerformanceObserver((list) => {
+//       for (const entry of list.getEntries()) {
+//         measureFrame();
+//       }
+//     });
+
+//     observer.observe({ entryTypes: ['resource', 'paint', 'frame'] });
+
+//     // Return the current FPS
+//     return measureFrame();
+//   });
+// }
+
+// Measure Game Loading Time
+// async function measureGameLoadingTime(page) {
+//   const startTime = Date.now();
+//   await page.waitForNavigation({ waitUntil: 'load' });
+//   const endTime = Date.now();
+//   return endTime - startTime;
+// }
+
 // const authMiddleware = require('./middleware/authMiddleware');
 
 // Middleware
