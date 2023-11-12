@@ -25,7 +25,7 @@
 </head>
 <body>
     <h1>Welcome to the Dashboard</h1>
-    <button id="show-login-button">Login</button>
+    <button id="show-login-button">Login with Google</button>
     
     <!-- Login Dialog Box -->
     <div id="login-dialog">
@@ -45,6 +45,7 @@
         // Show the login dialog when the "Login" button is clicked
         document.getElementById('show-login-button').addEventListener('click', function() {
             document.getElementById('login-dialog').style.display = 'block';
+            window.location.href = '/auth/google';
         });
 
         // Close the login dialog when the "Close" button is clicked

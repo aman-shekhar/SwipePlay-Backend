@@ -2,12 +2,16 @@
 const express = require('express');
 const axios = require('axios');
 const app = express();
+const path = require('path');
 const http = require('http').createServer(app);
 const { Server } = require('socket.io');
 const http1 = require('http');
 const server = http1.createServer(app);
 const puppeteer = require('puppeteer');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+const session = require('express-session');
 const io = require('socket.io')(http);
 global.io = io;
 
@@ -18,6 +22,61 @@ const headers = {
     'tenantId': '1',
     'Content-Type': 'application/json'
 };
+
+app.use(session({
+  secret: 'your-secret-key',
+  resave: true,
+  saveUninitialized: true,
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+passport.use(new GoogleStrategy({
+  clientID: "550929696487-nrvl5r7li22qtlte9erujmmpor79ubpt.apps.googleusercontent.com",
+  clientSecret: "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",
+  callbackURL: '/auth/google/callback',
+}, (accessToken, refreshToken, profile, done) => {
+  // Add logic to handle user profile and store in the database
+  return done(null, profile);
+}));
+
+
+// Serialize user to session
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+// Deserialize user from session
+passport.deserializeUser((obj, done) => {
+  done(null, obj);
+});
+
+// Set up routes for Google authentication
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+      res.redirect('/devPortal');
+  }
+);
+
+// Example route to check if the user is authenticated
+app.get('/devPortal', (req, res) => {
+  if (req.isAuthenticated()) {
+      res.sendFile(__dirname + '/devPortal/index.html');
+  } else {
+      res.redirect('/auth/google');
+  }
+});
+
+
 
 app.get('/measure-metrics/', async (req, res) => {
   const url = req.query.URL;
@@ -346,11 +405,12 @@ app.post('/postLikes/:userId', (req, res) => {
 // app.use('/users', usersRoutes);
 // app.use('/users', authMiddleware, usersRoutes);
 
+app.use(express.static(path.join(__dirname, 'devPortal')));
 app.get('/chat', (req, res) => {
 	res.sendFile(__dirname + '/index.html');
 });
 app.get('/devPortal', (req, res) => {
-	res.sendFile(__dirname + '/devPortal/login.html');
+	res.sendFile(__dirname + '/devPortal/index.html');
 });
 app.use(express.static("devPortal"));
 app.use(express.static('public'))
