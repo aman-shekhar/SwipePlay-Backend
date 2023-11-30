@@ -1,4 +1,3 @@
-// app.js
 const express = require('express');
 const axios = require('axios');
 const app = express();
@@ -17,10 +16,11 @@ global.io = io;
 
 const url = 'https://artemis.dview.io/artemis/v1/flush/1/sync/batch/mlympix.app';
 const headers = {
-    'cookie': 'auth_token=c6a8669e-ee95-4c42-9ef6-4a9b61380162;auth_user=1',
+    'ORIGIN-ID': 'mlympix#92ffa1b4-c064-4a44-826b-be6f22db0dd0',
     'X-MASTER-KEY': 'e25c6e78-5a81-4e55-b068-e498e620fb24',
     'tenantId': '1',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'COMPONENT-LABEL': 'artemis'
 };
 
 app.use(session({
